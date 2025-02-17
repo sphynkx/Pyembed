@@ -3,7 +3,7 @@
     "version": "1.0",
     "author": "Sphynkx",
     "descriptionmsg": "pyembed-desc",
-	"url": "https://github.com/sphynkx",
+	"url": "https://github.com/sphynkx/Pyembed",
     "type": "parserhook",
     "manifest_version": 1,
     "requires": {
