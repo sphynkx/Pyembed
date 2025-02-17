@@ -1,0 +1,65 @@
+{
+    "name": "Pyembed",
+    "version": "1.0",
+    "author": "Sphynkx",
+    "descriptionmsg": "pyembed-desc",
+	"url": "https://github.com/sphynkx",
+    "type": "parserhook",
+    "manifest_version": 1,
+    "requires": {
+        "MediaWiki": ">= 1.40"
+    },
+    "AutoloadClasses": {
+        "PyembedHooks": "includes/Pyembed.php"
+    },
+    "Hooks": {
+        "ParserFirstCallInit": "PyembedHooks::onParserFirstCallInit",
+        "BeforePageDisplay": "PyembedHooks::onBeforePageDisplay",
+        "EditPageBeforeEditButtons": "PyembedHooks::beforeEditButtons",
+        "CanonicalNamespaces": "PyembedHooks::onCanonicalNamespaces"
+    },
+    "MessagesDirs": {
+        "Pyembed": [
+            "i18n"
+        ]
+    },
+    "ExtensionMessagesFiles": {
+        "PyembedAlias": "Pyembed.i18n.alias.php",
+        "PyembedMagic": "Pyembed.i18n.magic.php"
+    },
+    "MagicWords": {
+        "pyembed": "pyembed"
+    },
+    "ResourceModules": {
+        "ext.pyembed.styles": {
+            "styles": [
+                "/extensions/Pyembed/resources/prism.min.css",
+                "/extensions/Pyembed/resources/ext.pyembed.css"
+            ]
+        },
+        "ext.pyembed.scripts": {
+            "scripts": [
+                "/extensions/Pyembed/resources/ext.pyembed.js",
+                "/extensions/Pyembed/resources/prism.min.js"
+            ]
+        }
+    },
+	
+    "config": {
+        "wgCodeHighlightMethod": "prism"
+    },
+    "Namespaces": [
+        {
+            "id": 3006,
+            "constant": "NS_PYEMBED",
+            "name": "Pyembed",
+            "subpages": true
+        },
+        {
+            "id": 3007,
+            "constant": "NS_PYEMBED_TALK",
+            "name": "Pyembed_talk",
+            "subpages": true
+        }
+    ]
+}

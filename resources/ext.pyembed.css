@@ -1,0 +1,14 @@
+/* Reset custom styles for code, pre..
+.prev_reset {
+    padding: 0 !important;
+    font-family: inherit !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    display: inline !important;
+}
+
+.prism-code {
+    all: unset;
+    display: inline !important;
+}
+*/

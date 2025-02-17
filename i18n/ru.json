@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Sphynkx"
+		]
+	},
+	"pyembed-desc": "Pyembed — это расширение MediaWiki, позволяющее встраивать и выполнять Python-код на вики-страницах.",
+	"pyembed-purge-caption": "Очистить",
+	"pyembed-purge-caption-page": "страницу",
+	"pyembed-purge-debug": "purge page",
+	"pyembed-execute-error": "Ошибка исполнения Python-кода.",
+	"pyembed-module-notfound": "Модуль <b>$1</b> не найден.",
+	"pyembed-no-content-found": "В модуле <b>$1</b> нет содержимого.",
+	"pyembed-input-error": "Недопустимые конструкции в параметре \"input\"."
+}

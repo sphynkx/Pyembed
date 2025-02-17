@@ -1,0 +1,15 @@
+{
+	"@metadata": {
+		"authors": [
+			"Sphynkx"
+		]
+	},
+	"pyembed-desc": "Pyembed is a MediaWiki extension that allows you to embed and execute Python code in wiki pages.",
+	"pyembed-purge-caption": "Purge",
+	"pyembed-purge-caption-page": "page",
+	"pyembed-purge-debug": "purge page",
+	"pyembed-execute-error": "Error executing Python code.",
+	"pyembed-module-notfound": "Module <b>$1</b> not found.",
+	"pyembed-no-content-found": "No content found for module $1.",
+	"pyembed-input-error": "Restricted \"input\" parameters."
+}
