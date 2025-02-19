@@ -3,7 +3,6 @@ import importlib
 import sys
 from allowed import allowed_builtins, allowed_objects
 
-
 class Sandbox:
     def __init__(self, debug=False, additional_allowed_imports=None, allowed_modules=None):
         self.debug = debug
@@ -52,18 +51,31 @@ class Sandbox:
         self._debug_print(f"Checking node: {ast.dump(node)}")
         if isinstance(node, ast.Import):
             for alias in node.names:
+                try:
+                    importlib.import_module(alias.name)
+                except ImportError:
+                    print(f"Error: Missing module: {alias.name}")
+                    sys.exit(2)
                 if alias.name not in self.allowed_objects:
-                    raise ImportError(f"Missing module: {alias.name}")
+                    print(f"Error: Restricted module: {alias.name}")
+                    sys.exit(3)
                 self.imported_modules.add(alias.name)
                 if alias.asname:
                     self.alias_mapping[alias.asname] = alias.name
                 self._debug_print(f"Module found: {alias.name}")
         if isinstance(node, ast.ImportFrom):
+            try:
+                importlib.import_module(node.module)
+            except ImportError:
+                print(f"Error: Missing module: {node.module}")
+                sys.exit(2)
             if node.module not in self.allowed_objects:
-                raise ImportError(f"Missing module: {node.module}")
+                print(f"Error: Restricted module: {node.module}")
+                sys.exit(3)
             for alias in node.names:
                 if alias.name not in self.allowed_objects[node.module]:
-                    raise ImportError(f"Missing module: {node.module}.{alias.name}")
+                    print(f"Error: Restricted module: {node.module}.{alias.name}")
+                    sys.exit(3)
                 self.imported_objects.add((node.module, alias.name))
                 if alias.asname:
                     self.alias_mapping[alias.asname] = alias.name
@@ -71,7 +83,8 @@ class Sandbox:
         if isinstance(node, ast.Attribute):
             if isinstance(node.value, ast.Name) and node.value.id in self.allowed_objects:
                 if node.attr not in self.allowed_objects[node.value.id]:
-                    raise ImportError(f"Missing function: {node.attr} from {node.value.id} module")
+                    print(f"Error: Restricted function: {node.attr} from {node.value.id} module")
+                    sys.exit(3)
         if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
             actual_id = self.alias_mapping.get(node.id, node.id)
             if (actual_id not in self.allowed_builtins and 
@@ -81,14 +94,11 @@ class Sandbox:
                 actual_id not in self.loop_variables and 
                 actual_id not in self.local_variables and 
                 actual_id not in self.imported_modules and 
-                actual_id not in {name for _, name in self.imported_objects} ):
+                actual_id not in {name for _, name in self.imported_objects}):
                 if actual_id in self.safe_globals:  # Check globals defined in script pages..
                     self.defined_variables.add(actual_id)
                 else:
-                    ## Affects cases with temp.scripts when the global var defined but doesnt use in requested func 
-                    ## TODO: Implement strict mode to restrict this cases
                     self._debug_print(f"Restricted usage of built-in function or module: {node.id}")
-                    ##raise Exception(f"Restricted usage of built-in function or module: {node.id}")
         if isinstance(node, ast.Assign):
             for target in node.targets:
                 if isinstance(target, ast.Name):
@@ -116,8 +126,7 @@ class Sandbox:
             except ImportError as e:
                 module_name = str(e).split()[-1]
                 print(f"Error: Missing module: {module_name}")
-                if not self.debug:
-                    sys.exit(2)
+                sys.exit(2)
         for module, obj in self.imported_objects:
             imported_module = importlib.import_module(module)
             self.safe_globals[obj] = getattr(imported_module, obj)
@@ -137,7 +146,7 @@ class Sandbox:
             exec(compiled_code, self.safe_globals, self.safe_globals)
         except Exception as e:
             print(f"Error: {str(e)}")
-
+            sys.exit(1)
 
 if __name__ == "__main__":
     src = sys.argv[1]
@@ -159,10 +168,10 @@ if __name__ == "__main__":
         sandbox.compile_and_run(code)
         print("Code executed successfully.") if debug_mode else None
         sys.exit(0)
-    except ImportError as e:
-        module_name = str(e).split()[-1]
-        print(f"Error: Missing module: {module_name}")
+    except ModuleNotFoundError as e:
+        missing_module = str(e).split("'")[1]  # Извлекаем имя ненайденного модуля
+        print(missing_module)
         sys.exit(2)
     except Exception as e:
-        print(f"Error: {e}") if debug_mode else None
+        print(f"Error: {str(e)}")
         sys.exit(1)
