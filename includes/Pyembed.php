@@ -77,7 +77,7 @@ class PyembedHooks {
 
 		$title = Title::newFromText("Pyembed:$module");
 		if (!$title || !$title->exists()) {
-			return "<span style='color:red;'>" . wfMessage('pyembed-module-notfound', "$module")->plain() . "</span><br>";
+			return "<span style='color:red;'>" . wfMessage('pyembed-scriptpage-notfound', "$module")->plain() . "</span><br>";
 		}
 
 		$wikiPage = WikiPage::factory($title);
@@ -234,7 +234,11 @@ class PyembedHooks {
 			unlink($tempFile);
 		}
 
-		if ($returnVar !== 0) {
+		if ($returnVar === 2) {
+			// Extract the missing module name from the error message
+			$missingModule = preg_replace('/Error: Missing module: /', '', $output[0]);
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-notfound', $missingModule)->plain() . "</span>";
+		} elseif ($returnVar !== 0) {
 			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-execute-error')->plain() . ".</span><br>" . implode('<br>', $output);
 		} else {
 			$commandOutput = implode('<br>', $output);
