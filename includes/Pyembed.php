@@ -187,67 +187,68 @@ class PyembedHooks {
 	}
 
 
-private static function executePythonCode( $code, $debugMode, $inputParams = [], $allowedModules = [] ) {
-    // Add "input" content into beginning of temp. script
-    $globalVarsCode = "";
-    foreach ($inputParams as $key => $value) {
-        $globalVarsCode .= "$key = $value\n";
-    }
+	private static function executePythonCode( $code, $debugMode, $inputParams = [], $allowedModules = [] ) {
+		// Add "input" content into beginning of temp. script
+		$globalVarsCode = "";
+		foreach ($inputParams as $key => $value) {
+			$globalVarsCode .= "$key = $value\n";
+		}
 
-    $code = $globalVarsCode . $code;
+		$code = $globalVarsCode . $code;
 
-    $tempFile = tempnam(sys_get_temp_dir(), 'pyembed_');
-    file_put_contents($tempFile, $code);
+		$tempFile = tempnam(sys_get_temp_dir(), 'pyembed_');
+		file_put_contents($tempFile, $code);
 
-    if ($debugMode == 'True') {
-        error_log("Temp file: " . $tempFile);
-        error_log("Code in file: " . file_get_contents($tempFile));
-    }
+		if ($debugMode == 'True') {
+			error_log("Temp file: " . $tempFile);
+			error_log("Code in file: " . file_get_contents($tempFile));
+		}
 
-    $sandboxScript = __DIR__ . '/../sandbox/sandbox.py';
-    // Convert the allowed modules to a JSON string
-    $allowedModulesString = escapeshellarg(json_encode($allowedModules));
-    $paramString = implode(' ', array_map(function($key, $value) {
-        return escapeshellarg("$key=$value");
-    }, array_keys($inputParams), $inputParams));
-    $command = "python $sandboxScript " . escapeshellarg($tempFile) . " " . escapeshellarg($debugMode) . " $allowedModulesString $paramString";
+		$sandboxScript = __DIR__ . '/../sandbox/sandbox.py';
+		// Convert the allowed modules to a JSON string
+		$allowedModulesString = escapeshellarg(json_encode($allowedModules));
+		$paramString = implode(' ', array_map(function($key, $value) {
+			return escapeshellarg("$key=$value");
+		}, array_keys($inputParams), $inputParams));
+		$command = "python $sandboxScript " . escapeshellarg($tempFile) . " " . escapeshellarg($debugMode) . " $allowedModulesString $paramString";
 
-    if ($debugMode == 'True') {
-        $command .= " 2>&1";
-        error_log("Command to be executed: " . $command);
-    } else {
-        $command .= " 2>/dev/null";
-    }
+		if ($debugMode == 'True') {
+			$command .= " 2>&1";
+			error_log("Command to be executed: " . $command);
+		} else {
+			$command .= " 2>/dev/null";
+		}
 
-    $output = [];
-    $returnVar = null;
+		$output = [];
+		$returnVar = null;
 
-    exec($command, $output, $returnVar);
+		exec($command, $output, $returnVar);
 
-    if ($debugMode == 'True') {
-        error_log("Command: " . $command);
-        error_log("Output: " . implode("\n", $output));
-        error_log("Return value: " . $returnVar);
-    }
+		if ($debugMode == 'True') {
+			error_log("Command: " . $command);
+			error_log("Output: " . implode("\n", $output));
+			error_log("Return value: " . $returnVar);
+		}
 
-    if ($debugMode == 'False') {
-        unlink($tempFile);
-    }
-echo "<p><br><p><br><p><br>\$returnVar=$returnVar";
+		if ($debugMode == 'False') {
+			unlink($tempFile);
+		}
 
-    if ($returnVar === 3) {
-        return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-restricted', $missingModule)->plain() . "</span>";
-    } elseif ($returnVar === 2) {
-        // Extract the missing module name from the error message
-        $missingModule = preg_replace('/Error: Missing module: /', '', $output[0]);
-        return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-notfound', $missingModule)->plain() . "</span>";
-    } elseif ($returnVar === 1) {
-        return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-execute-error')->plain() . ".</span><br>" . implode('<br>', $output);
-    } else {
-        $commandOutput = implode('<br>', $output);
-        return $commandOutput;
-    }
-}
+		echo "<p><br><p><br><p><br>\$returnVar=$returnVar";
+
+		if ($returnVar === 3) {
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-restricted', $missingModule)->plain() . "</span>";
+		} elseif ($returnVar === 2) {
+			// Extract the missing module name from the error message
+			$missingModule = preg_replace('/Error: Missing module: /', '', $output[0]);
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-notfound', $missingModule)->plain() . "</span>";
+		} elseif ($returnVar === 1) {
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-execute-error')->plain() . ".</span><br>" . implode('<br>', $output);
+		} else {
+			$commandOutput = implode('<br>', $output);
+			return $commandOutput;
+		}
+	}
 
 
 	private static function highlightCode($code) {

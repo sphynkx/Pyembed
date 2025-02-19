@@ -95,7 +95,7 @@ class Sandbox:
                 actual_id not in self.local_variables and 
                 actual_id not in self.imported_modules and 
                 actual_id not in {name for _, name in self.imported_objects}):
-                if actual_id in self.safe_globals:  # Check globals defined in script pages..
+                if actual_id in self.safe_globals:  ## Check globals defined in script pages..
                     self.defined_variables.add(actual_id)
                 else:
                     self._debug_print(f"Restricted usage of built-in function or module: {node.id}")
@@ -148,6 +148,7 @@ class Sandbox:
             print(f"Error: {str(e)}")
             sys.exit(1)
 
+
 if __name__ == "__main__":
     src = sys.argv[1]
     debug_mode = sys.argv[2].lower() == 'true'
@@ -158,7 +159,7 @@ if __name__ == "__main__":
     
     sandbox = Sandbox(debug=debug_mode)
     
-    # Check all items of allowed_objects
+    ## Check all items of allowed_objects
     for module, objects in eval(allowed_modules).items():
         sandbox.allowed_objects.update({module: objects})
     
@@ -169,7 +170,7 @@ if __name__ == "__main__":
         print("Code executed successfully.") if debug_mode else None
         sys.exit(0)
     except ModuleNotFoundError as e:
-        missing_module = str(e).split("'")[1]  # Извлекаем имя ненайденного модуля
+        missing_module = str(e).split("'")[1]
         print(missing_module)
         sys.exit(2)
     except Exception as e:
