@@ -234,10 +234,11 @@ class PyembedHooks {
 			unlink($tempFile);
 		}
 
-		echo "<p><br><p><br><p><br>\$returnVar=$returnVar";
+		///echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
 
 		if ($returnVar === 3) {
-			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-restricted', $missingModule)->plain() . "</span>";
+			$restrictedModule = preg_replace('/Error: Restricted module: /', '', $output[0]);
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-restricted', $restrictedModule)->plain() . "</span>";
 		} elseif ($returnVar === 2) {
 			// Extract the missing module name from the error message
 			$missingModule = preg_replace('/Error: Missing module: /', '', $output[0]);

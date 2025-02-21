@@ -10,7 +10,7 @@
 	"pyembed-purge-debug": "purge page",
 	"pyembed-execute-error": "Ошибка исполнения Python-кода.",
 	"pyembed-module-notfound": "Модуль '<b>$1</b>' не найден.",
-	"pyembed-module-restricted": "Модуль '<b>$1</b>' не разрешен.",
+	"pyembed-module-restricted": "Обнаружен неразрешенный модуль '<b>$1</b>'. Выполнение кода отменено.",
 	"pyembed-scriptpage-notfound": "Страница скрипта '<b>$1</b>' не найдена.",
 	"pyembed-no-content-found": "На странице скрипта '<b>$1</b>' нет содержимого.",
 	"pyembed-input-error": "Недопустимые конструкции в параметре \"input\"."
