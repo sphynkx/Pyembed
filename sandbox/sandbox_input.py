@@ -1,6 +1,6 @@
 import ast
 import sys
-import argparse
+import base64
 
 class InputValidator(ast.NodeVisitor):
     def __init__(self):
@@ -29,6 +29,10 @@ class InputValidator(ast.NodeVisitor):
             value_type = type(value_node.value).__name__
             if value_type not in self.allowed_types:
                 self.valid = False
+        elif isinstance(value_node, ast.Dict):
+            for key, value in zip(value_node.keys, value_node.values):
+                if not isinstance(key, ast.Constant) or not isinstance(value, ast.Constant):
+                    self.valid = False
         elif isinstance(value_node, ast.Constant) and value_node.value is Ellipsis:
             pass
         else:
@@ -67,7 +71,6 @@ class InputValidator(ast.NodeVisitor):
             self.valid = False
         return self.valid
 
-
 def validate_input_code(input_code):
     validator = InputValidator()
     if validator.validate(input_code):
@@ -75,39 +78,11 @@ def validate_input_code(input_code):
     else:
         return ""
 
-
-def validate_input(param):
-    try:
-        # Save original value with quotes if it is a string
-        original_value = param
-
-        # If the parameter starts and ends with quotes, preserve them
-        if param.startswith(("'", '"')) and param.endswith(("'", '"')):
-            value = param
-        else:
-            value = ast.literal_eval(param)
-
-        # Return the original value if it was a string
-        return original_value if isinstance(value, str) else value
-
-    except:
-        print(f"Error: Invalid input parameter '{param}'.")
-
-
-
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser()
-    parser.add_argument("params", nargs='+')
-    args = parser.parse_args()
-
-    for arg in args.params:
-        if '=' in arg:
-            key, value = arg.split('=', 1)
-            validated_value = validate_input(value)
-            if validated_value is not None:
-                print(f"{key}={validated_value}")
-            else:
-                sys.exit(1)
-        else:
-            print(f"Error: Invalid input parameter '{arg}'.")
-            sys.exit(1)
+    encoded_input = sys.argv[1]
+    input_code = base64.b64decode(encoded_input).decode('utf-8')
+    validated_code = validate_input_code(input_code)
+    if validated_code:
+        print(validated_code)
+    else:
+        sys.exit(1)

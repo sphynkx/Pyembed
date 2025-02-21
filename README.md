@@ -17,7 +17,6 @@ Open page `Special:Version` and verify that the extension is successfully instal
 
 ### Variables in LocalSettings.php
 
-
 The extension can use variables declared in `LocalSettings.php`. Note about these parameters - see [Security notes](#security-notes).
 *  **$wgPyembedDebugMode** - debug mode: `false` (default) or `true`.
 *  **$wgPyembedAllowedModules** - plugging of additional Python modules. The value is an array with module names and a list of their objects to be resolved (see below).
@@ -89,11 +88,21 @@ Or in parameterized form:
 Global variables can be defined and sent to the called script. They are handled more strictly (see [Security notes](#security-notes)). Parameters are defined in the `input` parameter in the format `key=val`
 ```
 def func04():
-    print(f"{gvar=}")
+    print(f"{global_var=}")
+    for k,v in dct.items():
+        print(f"{k} => {v}")
 ```
 In this case, the call looks like this:
-
-    {{#pyembed:Test02|func04|input:gvar=42}}
+```
+{{#pyembed:Test02|func04|input:
+global_var = 42
+dct = {
+    'a': 1,
+    'b': 2,
+    'c': 3
+    }
+}}
+```
 
 
 ### Output formatted text

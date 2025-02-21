@@ -115,23 +115,20 @@ class PyembedHooks {
 			if (strpos($param, 'input:') === 0) {
 				error_log("Found input param: $param");
 				$inputLines = trim(substr($param, 6));
-				$inputLinesArray = preg_split('/\r\n|\r|\n/', $inputLines);
-				foreach ($inputLinesArray as $inputLine) {
-					$inputLine = escapeshellarg($inputLine); // Escape quotes/doublequotes
-					$command = "python " . escapeshellarg($inputValidatorScript) . " " . $inputLine . " 2>&1";
-					$insandoutpArray = [];
-					$returnVar = null;
-					exec($command, $insandoutpArray, $returnVar);
+				$inputLinesBase64 = base64_encode($inputLines); // Encode in base64 to save all formating
+				// echo "<p><br><p><br><p><br>\$inputLinesBase64=$inputLinesBase64 ; ".print_r($inputLinesBase64,true);
+				$command = "python " . escapeshellarg($inputValidatorScript) . " " . escapeshellarg($inputLinesBase64) . " 2>&1";
+				$insandoutpArray = [];
+				$returnVar = null;
+				exec($command, $insandoutpArray, $returnVar);
 
-					error_log("\$inputLines=" . print_r($inputLine, true) . print_r($insandoutpArray, true));
+				error_log("\$inputLinesBase64=" . print_r($inputLinesBase64, true) . print_r($insandoutpArray, true));
 
-					if ($returnVar !== 0) {
-						return "<span style='color:red; font-weight: bold;'>" . wfMessage('pyembed-input-error')->plain() . "</span>";
-					}
-
-					$processedInput .= implode("\n", $insandoutpArray) . "\n";
+				if ($returnVar !== 0) {
+					return "<span style='color:red; font-weight: bold;'>" . wfMessage('pyembed-input-error')->plain() . "</span>";
 				}
-				error_log("Processed insandoutpArray: $processedInput");
+
+				$processedInput .= implode("\n", $insandoutpArray) . "\n";
 			} elseif (strpos($param, 'markup:') === 0) {
 				$markupMode = substr($param, 7);
 			} else {
@@ -234,7 +231,7 @@ class PyembedHooks {
 			unlink($tempFile);
 		}
 
-		///echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
+		// echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
 
 		if ($returnVar === 3) {
 			$restrictedModule = preg_replace('/Error: Restricted module: /', '', $output[0]);
