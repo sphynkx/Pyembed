@@ -124,21 +124,30 @@ If the script output already contains some formatting in the form of indents, th
 In `LocalSettings.php` set the variable:
 ```
 $wgPyembedAllowedModules = [
-    'calendar' => ['month', 'weekheader'],
+    'texttable'=>['Texttable'],
 ];
 ```
 Also add to `Pyembed:Test02` the module import and function definition:
 ```
-import calendar
+from texttable import Texttable
 
-def func06(year, month):
-    print(calendar.month(year, month))
+def func06(data):
+    table = Texttable()
+    table.set_deco(Texttable.VLINES)
+    table.add_rows(data)
+    print(table.draw())
 ```
 Call:
-
-    {{#pyembed:Test02|func06|2025|2}}
-
-will display the calendar for the specified year and month, enclosed in `<pre>..</pre>` tags to preserve formatting.
+```
+{{#pyembed:Test02|func06|data|input:data = [
+    ["Name", "Age", "Occupation"],
+    ["Alice", 30, "Engineer"],
+    ["Bob", 25, "Data Scientist"],
+    ["Charlie", 35, "Teacher"]
+    ]
+}}
+```
+will display the table with specified data, enclosed in `<pre>..</pre>` tags to preserve formatting.
 
 
 ### Image output

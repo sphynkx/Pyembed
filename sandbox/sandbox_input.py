@@ -17,27 +17,35 @@ class InputValidator(ast.NodeVisitor):
         if not isinstance(node.targets[0], ast.Name):
             self.valid = False
         value_node = node.value
-        if isinstance(value_node, (ast.List, ast.Tuple, ast.Set, ast.Dict)):
-            elements = value_node.elts if isinstance(value_node, (ast.List, ast.Tuple, ast.Set)) else value_node.values
+        self.visit_value(value_node)
+        self.generic_visit(node)
+
+    def visit_value(self, value_node):
+        if isinstance(value_node, (ast.List, ast.Tuple, ast.Set)):
+            elements = value_node.elts
             for elem in elements:
-                if not isinstance(elem, ast.Constant):
+                if not isinstance(elem, (ast.Constant, ast.List, ast.Tuple, ast.Set)):
                     self.valid = False
-                value_type = type(elem.value).__name__ if hasattr(elem, 'value') else 'Ellipsis'
-                if value_type not in self.allowed_types:
+                else:
+                    value_type = type(elem.value).__name__ if hasattr(elem, 'value') else 'Ellipsis'
+                    if value_type not in self.allowed_types:
+                        self.valid = False
+                if isinstance(elem, (ast.List, ast.Tuple, ast.Set)):
+                    self.visit_value(elem)
+        elif isinstance(value_node, ast.Dict):
+            for key, value in zip(value_node.keys, value_node.values):
+                if not isinstance(key, ast.Constant) or not isinstance(value, (ast.Constant, ast.List, ast.Tuple, ast.Set)):
                     self.valid = False
+                if isinstance(value, (ast.List, ast.Tuple, ast.Set)):
+                    self.visit_value(value)
         elif isinstance(value_node, ast.Constant):
             value_type = type(value_node.value).__name__
             if value_type not in self.allowed_types:
                 self.valid = False
-        elif isinstance(value_node, ast.Dict):
-            for key, value in zip(value_node.keys, value_node.values):
-                if not isinstance(key, ast.Constant) or not isinstance(value, ast.Constant):
-                    self.valid = False
         elif isinstance(value_node, ast.Constant) and value_node.value is Ellipsis:
             pass
         else:
             self.valid = False
-        self.generic_visit(node)
 
     def visit_Expr(self, node):
         self.valid = False
