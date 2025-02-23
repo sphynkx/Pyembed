@@ -5,21 +5,23 @@ allowed_builtins = {
 }
 
 allowed_objects = {
-    'abc': {'ABC', 'abstractmethod'},
-    'asyncio': {'all_tasks', 'create_task', 'gather', 'wait', 'sleep', 'run', 'cancel', 'Queue'},
-    'base64': {'b64encode', 'b64decode', 'encode', 'decode'},
-    'datetime': {'datetime', 'timedelta', 'date', 'time'},
-    'functools': {'reduce', 'partial', 'wraps', 'lru_cache', 'singledispatch'},
-    'gmpy2': {'mpz', 'mpq', 'mpfr', 'mpc', 'is_prime', 'fib'},
-    'html': {'escape', 'unescape'},
-    'io': {'BytesIO'},
-    'itertools': {'count', 'cycle', 'repeat', 'combinations', 'permutations'},
-    'json': {'dumps', 'loads', 'JSONEncoder', 'JSONDecoder'},
-    'matplotlib.pyplot': {'plot', 'show', 'figure', 'title', 'xlabel', 'ylabel'},
+    'abc': {'abc.ABC', 'abc.ABCMeta', 'abc.abstractclassmethod', 'abc.abstractmethod', 'abc.abstractproperty', 'abc.abstractstaticmethod', 'abc.update_abstractmethods'},
+    'asyncio': {'asyncio.all_tasks', 'asyncio.cancel', 'asyncio.create_task', 'asyncio.gather', 'asyncio.Queue', 'asyncio.run', 'asyncio.sleep', 'asyncio.wait'},
+    'base64': {'base64.b64decode', 'base64.b64encode', 'base64.decode', 'base64.encode'},
+    'calendar': {'calendar.month', 'calendar.weakheader'},
+    'datetime': {'datetime.date', 'datetime.dateime', 'datetime.time', 'datetime.timedelta'},
+    'functools': {'functools.lru_cache', 'functools.partial', 'functools.reduce', 'functools.singledispatch', 'functools.wraps'},
+    'gmpy2': {'gmpy2.fib', 'gmpy2.is_prime', 'gmpy2.mpc', 'gmpy2.mpfr', 'gmpy2.mpq', 'gmpy2.mpz'},
+    'html': {'html.escape', 'html.unescape'},
+    'io': {'BytesIO', 'BytesIO.close', 'BytesIO.read', 'BytesIO.seek'},
+    'ipaddress': {'ipaddress.ip_address', 'ipaddress.IPv4Address', 'ipaddress.IPv6Address'},
+    'itertools': {'itertools.accumulate', 'itertools.batched', 'itertools.chain', 'itertools.combinations', 'itertools.combinations_with_replacement', 'itertools.compress', 'itertools.count', 'itertools.cycle', 'itertools.dropwhile', 'itertools.filterfalse', 'itertools.groupby', 'itertools.islice', 'itertools.pairwise', 'itertools.permutations', 'itertools.product', 'itertools.repeat', 'itertools.starmap', 'itertools.takewhile', 'itertools.tee', 'itertools.zip_longest'},
+    'json': {'json.dumps', 'json.JSONDecoder', 'json.JSONEncoder', 'json.loads'},
+    'matplotlib.pyplot': {'figure', 'plot', 'show', 'title', 'xlabel', 'ylabel'},
     'math': {'sqrt', 'cos', 'sin', 'pi', 'log', 'exp', 'factorial'},
     'mpl_toolkits.mplot3d': {'Axes3D'},
     'numpy': {'array', 'arange', 'linspace', 'zeros', 'ones', 'empty', 'eye', 'dot', 'inner'},
-    'pandas': {'DataFrame', 'Series', 'head', 'tail', 'describe', 'info'},
+    'pandas': {'pandas.DataFrame', 'pandas.describe', 'pandas.head', 'pandas.info', 'pandas.Series', 'pandas.tail'},
     'random': {'Random', 'randint', 'choice', 'shuffle'},
-    'time': {'time', 'sleep', 'ctime', 'strftime', 'strptime', 'gmtime', 'localtime'}
+    'time': {'time.ctime', 'time.gmtime', 'time.localtime', 'time.sleep', 'time.strftime', 'time.strptime'}
 }

@@ -20,6 +20,7 @@ class Sandbox:
         self.imported_modules = set()
         self.imported_objects = set()
         self.alias_mapping = {}
+        self.class_instances = {}
         self.safe_globals = {}
 
     def _debug_print(self, message):
@@ -39,6 +40,9 @@ class Sandbox:
                     if isinstance(target, ast.Name):
                         self.defined_variables.add(target.id)
                         self._debug_print(f"Variable found: {target.id}")
+                    if isinstance(target, ast.Name) and isinstance(node.value, ast.Call) and isinstance(node.value.func, ast.Name):
+                        self.class_instances[target.id] = node.value.func.id
+                        self._debug_print(f"Class instance found: {target.id} = {node.value.func.id}")
             if isinstance(node, ast.For):
                 if isinstance(node.target, ast.Name):
                     self.loop_variables.add(node.target.id)
@@ -73,18 +77,31 @@ class Sandbox:
                 print(f"Error: Restricted module: {node.module}")
                 sys.exit(3)
             for alias in node.names:
+                full_name = f"{node.module}.{alias.name}"
                 if alias.name not in self.allowed_objects[node.module]:
-                    print(f"Error: Restricted module: {node.module}.{alias.name}")
+                    print(f"Error: Restricted module: {full_name}")
                     sys.exit(3)
                 self.imported_objects.add((node.module, alias.name))
                 if alias.asname:
                     self.alias_mapping[alias.asname] = alias.name
-                self._debug_print(f"Object found: {node.module}.{alias.name}")
+                self._debug_print(f"Object found: {full_name}")
         if isinstance(node, ast.Attribute):
-            if isinstance(node.value, ast.Name) and node.value.id in self.allowed_objects:
-                if node.attr not in self.allowed_objects[node.value.id]:
-                    print(f"Error: Restricted function: {node.attr} from {node.value.id} module")
-                    sys.exit(3)
+            if isinstance(node.value, ast.Name):
+                instance_name = node.value.id
+                if instance_name in self.class_instances:
+                    class_name = self.class_instances[instance_name]
+                    module_name = self._get_module_name(class_name)
+                    full_name = f"{class_name}.{node.attr}"
+                    self._debug_print(f"Checking method: {full_name} against {self.allowed_objects.get(module_name, [])}")
+                    if full_name not in self.allowed_objects.get(module_name, []):
+                        print(f"Error: Restricted method: {full_name} not in {self.allowed_objects.get(module_name, [])}, {class_name=}, {module_name=}")
+                        sys.exit(5)
+                else:
+                    if node.value.id in self.allowed_objects:
+                        full_name = f"{node.value.id}.{node.attr}"
+                        if full_name not in self.allowed_objects[node.value.id]:
+                            print(f"Error: Restricted attribute: {full_name} from {node.value.id} module")
+                            sys.exit(4)
         if isinstance(node, ast.Name) and isinstance(node.ctx, ast.Load):
             actual_id = self.alias_mapping.get(node.id, node.id)
             if (actual_id not in self.allowed_builtins and 
@@ -111,6 +128,12 @@ class Sandbox:
         if isinstance(node, ast.comprehension):
             self.local_variables.add(node.target.id)
             self._debug_print(f"Local variable added: {node.target.id}")
+
+    def _get_module_name(self, class_name):
+        for module, classes in self.allowed_objects.items():
+            if class_name in classes:
+                return module
+        return None
 
     def compile_and_run(self, source_code):
         tree = ast.parse(source_code)

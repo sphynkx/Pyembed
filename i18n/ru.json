@@ -11,6 +11,8 @@
 	"pyembed-execute-error": "Ошибка исполнения Python-кода.",
 	"pyembed-module-notfound": "Модуль '<b>$1</b>' не найден.",
 	"pyembed-module-restricted": "Обнаружен неразрешенный модуль '<b>$1</b>'. Выполнение кода отменено.",
+	"pyembed-attribute-restricted": "Обнаружен неразрешенный атрибут '<b>$1</b>' в модуле '<b>$2</b>'. Выполнение кода отменено.",
+	"pyembed-method-restricted": "Обнаружен неразрешенный метод: '<b>$1</b>'. Выполнение кода отменено.",
 	"pyembed-scriptpage-notfound": "Страница скрипта '<b>$1</b>' не найдена.",
 	"pyembed-no-content-found": "На странице скрипта '<b>$1</b>' нет содержимого.",
 	"pyembed-input-error": "Недопустимые конструкции в параметре \"input\"."

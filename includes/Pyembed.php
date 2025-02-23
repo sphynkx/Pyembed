@@ -37,7 +37,7 @@ class PyembedHooks {
                 // TODO: Configure caption text via LocalSettings.php
                 $captionText = "<a href=\"/$title?action=purge\">" . wfMessage('pyembed-purge-caption')->plain() . "</a> " . wfMessage('pyembed-purge-caption-page')->plain() . ".";
                 $class = ($wgCodeHighlightMethod === 'pygments') ? 'pygments' : '';
-                $codeWithLineNumbers = "<pre class='line-numbers language-python $class'><code class='language-python'>$highlightedCode</code></pre>";// was $highlightedCodeWithLineNumbers
+                $codeWithLineNumbers = "<pre class='line-numbers language-python $class'><code class='language-python'>$highlightedCode</code></pre>";
 
                 $out->clearHTML();
                 $out->addHTML("$captionText$codeWithLineNumbers");
@@ -233,11 +233,16 @@ class PyembedHooks {
 
 		// echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
 
-		if ($returnVar === 3) {
+		if($returnVar === 5) {
+			preg_match('/Error: Restricted method: (.*?) not in .*/', $output[0], $matches);
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-method-restricted', $matches[1])->plain() . "</span>";
+		} elseif($returnVar === 4) {
+			preg_match('/Error: Restricted attribute: (.*?) from (.*?) module/', $output[0], $matches);
+			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-attribute-restricted', $matches[1], $matches[2])->plain() . "</span>";
+		} elseif ($returnVar === 3) {
 			$restrictedModule = preg_replace('/Error: Restricted module: /', '', $output[0]);
 			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-restricted', $restrictedModule)->plain() . "</span>";
 		} elseif ($returnVar === 2) {
-			// Extract the missing module name from the error message
 			$missingModule = preg_replace('/Error: Missing module: /', '', $output[0]);
 			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-module-notfound', $missingModule)->plain() . "</span>";
 		} elseif ($returnVar === 1) {

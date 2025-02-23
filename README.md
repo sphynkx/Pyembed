@@ -19,7 +19,7 @@ Open page `Special:Version` and verify that the extension is successfully instal
 
 The extension can use variables declared in `LocalSettings.php`. Note about these parameters - see [Security notes](#security-notes).
 *  **$wgPyembedDebugMode** - debug mode: `false` (default) or `true`.
-*  **$wgPyembedAllowedModules** - plugging of additional Python modules. The value is an array with module names and a list of their objects to be resolved (see below).
+*  **$wgPyembedAllowedModules** - plugging of additional Python modules. The value is an hash with module names as keys and a list of their objects to be resolved as values (see below).
 
 
 ## Security notes
@@ -124,7 +124,7 @@ If the script output already contains some formatting in the form of indents, th
 In `LocalSettings.php` set the variable:
 ```
 $wgPyembedAllowedModules = [
-    'texttable'=>['Texttable'],
+    'texttable'=>['Texttable', 'Texttable.field_names', 'Texttable.set_deco', 'Texttable.add_rows', 'Texttable.add_row', 'Texttable.draw', 'Texttable.VLINES'],
 ];
 ```
 Also add to `Pyembed:Test02` the module import and function definition:
