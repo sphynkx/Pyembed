@@ -17,11 +17,11 @@ allowed_objects = {
     'ipaddress': {'ipaddress.ip_address', 'ipaddress.IPv4Address', 'ipaddress.IPv6Address'},
     'itertools': {'itertools.accumulate', 'itertools.batched', 'itertools.chain', 'itertools.combinations', 'itertools.combinations_with_replacement', 'itertools.compress', 'itertools.count', 'itertools.cycle', 'itertools.dropwhile', 'itertools.filterfalse', 'itertools.groupby', 'itertools.islice', 'itertools.pairwise', 'itertools.permutations', 'itertools.product', 'itertools.repeat', 'itertools.starmap', 'itertools.takewhile', 'itertools.tee', 'itertools.zip_longest'},
     'json': {'json.dumps', 'json.JSONDecoder', 'json.JSONEncoder', 'json.loads'},
-    'matplotlib.pyplot': {'figure', 'plot', 'show', 'title', 'xlabel', 'ylabel'},
+    'matplotlib.pyplot': {'matplotlib.pyplot.figure', 'matplotlib.pyplot.plot', 'matplotlib.pyplot.savefig', 'matplotlib.pyplot.show', 'matplotlib.pyplot.title', 'matplotlib.pyplot.xlabel', 'matplotlib.pyplot.ylabel'},
     'math': {'sqrt', 'cos', 'sin', 'pi', 'log', 'exp', 'factorial'},
     'mpl_toolkits.mplot3d': {'Axes3D'},
     'numpy': {'array', 'arange', 'linspace', 'zeros', 'ones', 'empty', 'eye', 'dot', 'inner'},
     'pandas': {'pandas.DataFrame', 'pandas.describe', 'pandas.head', 'pandas.info', 'pandas.Series', 'pandas.tail'},
-    'random': {'Random', 'randint', 'choice', 'shuffle'},
+    'random': {'random.Random', 'random.Random.randint', 'random.Random.choice', 'random.Random.shuffle'},
     'time': {'time.ctime', 'time.gmtime', 'time.localtime', 'time.sleep', 'time.strftime', 'time.strptime'}
 }

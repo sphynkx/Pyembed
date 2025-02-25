@@ -1,4 +1,4 @@
-Pyembed is a [Mediwiki](https://www.mediawiki.org/) extension that allows you to use Python as embedded language. The extension is inspired by [Scribunto](https://www.mediawiki.org/wiki/Extension:Scribunto) and is similar in many ways.
+Pyembed is a [Mediawiki](https://www.mediawiki.org/) extension that allows you to use [Python](https://www.python.org/) as embedded language. The extension is inspired by [Scribunto](https://www.mediawiki.org/wiki/Extension:Scribunto) and is similar in many ways.
 
 
 ## Requirements
