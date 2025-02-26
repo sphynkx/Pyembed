@@ -78,7 +78,8 @@ class Sandbox:
                 sys.exit(3)
             for alias in node.names:
                 full_name = f"{node.module}.{alias.name}"
-                if alias.name not in self.allowed_objects[node.module]:
+##                if alias.name not in self.allowed_objects[node.module]:
+                if full_name not in self.allowed_objects[node.module]:
                     print(f"Error: Restricted module: {full_name}")
                     sys.exit(3)
                 self.imported_objects.add((node.module, alias.name))
@@ -93,6 +94,8 @@ class Sandbox:
                     module_name = self._get_module_name(class_name)
                     full_name = f"{class_name}.{node.attr}"
                     self._debug_print(f"Checking method: {full_name} against {self.allowed_objects.get(module_name, [])}")
+                    ####print(f'============\n{module_name=}\n{full_name=}\n{self.allowed_objects=}\n{class_name=}\n==============')
+##                    if full_name not in self.allowed_objects.get(full_name, []):
                     if full_name not in self.allowed_objects.get(module_name, []):
                         print(f"Error: Restricted method: {full_name} not in {self.allowed_objects.get(module_name, [])}, {class_name=}, {module_name=}")
                         sys.exit(5)
@@ -131,6 +134,7 @@ class Sandbox:
 
     def _get_module_name(self, class_name):
         for module, classes in self.allowed_objects.items():
+            ####print(f'    {module} => {classes} ;; {class_name=}\n')
             if class_name in classes:
                 return module
         return None
@@ -185,7 +189,6 @@ if __name__ == "__main__":
     ## Check all items of allowed_objects
     for module, objects in eval(allowed_modules).items():
         sandbox.allowed_objects.update({module: objects})
-    
     try:
         with open(src, 'r') as file:
             code = file.read()

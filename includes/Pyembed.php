@@ -208,7 +208,7 @@ class PyembedHooks {
 			return escapeshellarg("$key=$value");
 		}, array_keys($inputParams), $inputParams));
 		$command = "python $sandboxScript " . escapeshellarg($tempFile) . " " . escapeshellarg($debugMode) . " $allowedModulesString $paramString";
-
+////echo "<p><br><p><br><p><br>\$allowedModulesString=$allowedModulesString ; <br>\$command=$command";
 		if ($debugMode == 'True') {
 			$command .= " 2>&1";
 			error_log("Command to be executed: " . $command);
@@ -234,6 +234,7 @@ class PyembedHooks {
 		// echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
 
 		if($returnVar === 5) {
+/////echo "<p><br><p><br><p><br>\$returnVar=$returnVar ; ".print_r($output,true);
 			preg_match('/Error: Restricted method: (.*?) not in .*/', $output[0], $matches);
 			return "<span style='color:red; font-weight:bold;'>" . wfMessage('pyembed-method-restricted', $matches[1])->plain() . "</span>";
 		} elseif($returnVar === 4) {
